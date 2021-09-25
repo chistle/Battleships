@@ -20,7 +20,12 @@ class GameBoard(object):
         self.shots.append(Shot(shot_location, is_hit))
 
     def is_game_over(self):
-        pass
+        return all([b.is_destroyed() for b in self.battleships])
+
+        for b in self.battleships:
+            if not b.is_destroyed():
+                return False
+        return True
 
 class Shot(object):
     def __init__(self, location, is_hit):
@@ -58,6 +63,8 @@ class Battleship(object):
         except ValueError:
             return None
 
+    def is_destroyed(self):
+        return all(self.hits)
 
 def render(game_board, show_battleships=False):
     header = "+" + "-" * game_board.width + "+"
