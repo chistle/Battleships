@@ -103,8 +103,8 @@ def render(game_board, show_battleships=False):
 if __name__ == "__main__":
     battleships = [
         Battleship.build((1, 1), 2, "N"),
-        Battleship.build((5, 8), 5, "N"),
-        Battleship.build((2, 3), 4, "E")
+        # Battleship.build((5, 8), 5, "N"),
+        # Battleship.build((2, 3), 4, "E")
     ]
 
     game_boards = [
@@ -112,14 +112,20 @@ if __name__ == "__main__":
         GameBoard(copy.deepcopy(battleships), 10, 10)
     ]
 
+    player_names = [
+        "Player 1",
+        "Player 2"
+    ]
+
     offencive_idx = 0
 
     while True:
-        # Defeisive player is the non-offensive one
+        # Defensive player is the non-offensive one
         defensive_idx = (offencive_idx + 1) % 2
 
         defensive_board = game_boards[defensive_idx]
 
+        print("%s YOUR TURN!" % player_names[offencive_idx])
         inp = input("Where do you want to shoot?\n")
         # TODO: deal with invalid input
         xstr, ystr = inp.split(",")
@@ -130,7 +136,7 @@ if __name__ == "__main__":
         render(defensive_board)
 
         if defensive_board.is_game_over():
-            print("YOU WIN")
+            print("%s WINS!" % player_names[offencive_idx])
             break
 
         # Offensive player becomes the previous defensive one
