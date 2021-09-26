@@ -1,3 +1,6 @@
+import copy
+
+
 class GameBoard(object):
 
     def __init__(self, battleships, width, height):
@@ -104,22 +107,32 @@ if __name__ == "__main__":
         Battleship.build((2, 3), 4, "E")
     ]
 
-    game_board = GameBoard(battleships, 10, 10)
+    game_boards = [
+        GameBoard(battleships, 10, 10),
+        GameBoard(copy.deepcopy(battleships), 10, 10)
+    ]
+
+    offencive_idx = 0
 
     while True:
+        # Defeisive player is the non-offensive one
+        defensive_idx = (offencive_idx + 1) % 2
+
+        defensive_board = game_boards[defensive_idx]
+
         inp = input("Where do you want to shoot?\n")
         # TODO: deal with invalid input
         xstr, ystr = inp.split(",")
         x = int(xstr)
         y = int(ystr)
 
-        game_board.take_shot((x, y))
-        render(game_board)
+        defensive_board.take_shot((x, y))
+        render(defensive_board)
 
-        if game_board.is_game_over():
+        if defensive_board.is_game_over():
             print("YOU WIN")
             break
-        # if game_has_ended:
-        # print "YOU WIN"
-        # break
+
+        # Offensive player becomes the previous defensive one
+        offencive_idx = defensive_idx
 
