@@ -55,11 +55,12 @@ class Battleship(object):
 
             body.append(el)
 
-        return Battleship(body)
+        return Battleship(body, direction)
 
-    def __init__(self, body):
+    # TODO: which of these parameters are actually needed
+    def __init__(self, body, direction):
+        self.direction = direction
         self.body = body
-        # [False, False, False, False]
         self.hits = [False] * len(body)
 
     def body_index(self, location):
@@ -86,11 +87,29 @@ def render(game_board, show_battleships=False):
     board = []
     for _ in range(game_board.width):
         board.append([None for _ in range(game_board.height)])
+
     if show_battleships:
         # Add the battleships to the board
         for b in game_board.battleships:
-            for x, y in b.body:
-                board[x][y] = "O"
+            for i, (x, y) in enumerate(b.body):
+                if b.direction == "N":
+                    chs = ("v", "|", "^")
+                elif b.direction == "S":
+                    chs = ("^", "|", "v")
+                elif b.direction == "W":
+                    chs = (">", "=", "<")
+                elif b.direction == "E":
+                    chs = ("<", "=", ">")
+                else:
+                    raise "Unknown direction"
+
+                if i == 0:
+                    ch = chs[0]
+                elif i == len(b.body) - 1:
+                    ch = chs[2]
+                else:
+                    ch = chs[1]
+                board[x][y] = ch
 
     # Add the shots to the board
     for sh in game_board.shots:
@@ -113,7 +132,7 @@ def render(game_board, show_battleships=False):
 def get_random_ai_shot(game_board):
     x = random.randint(0, game_board.width - 1)
     y = random.randint(0, game_board.height - 1)
-    return (x, y)
+    return (x, y) # Tuple, not redundant braces
 
 
 def get_human_shot(game_board):
@@ -123,14 +142,14 @@ def get_human_shot(game_board):
     x = int(xstr)
     y = int(ystr)
 
-    return (x, y)
+    return (x, y) # Tuple, not redundant braces
 
 
 if __name__ == "__main__":
     battleships = [
         Battleship.build((1, 1), 2, "N"),
-        # Battleship.build((5, 8), 5, "N"),
-        # Battleship.build((2, 3), 4, "E")
+        Battleship.build((5, 8), 5, "N"),
+        Battleship.build((2, 3), 4, "E")
     ]
 
     game_boards = [
